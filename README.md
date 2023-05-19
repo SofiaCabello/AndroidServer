@@ -11,6 +11,6 @@
 
 ​		消息的传递基于JSON实现。JSON首行是类型，服务器通过判断类型来选择执行不同的功能。
 
-![未命名绘图.drawio](/Users/jintaixi/Desktop/Android 大作业/未命名绘图.drawio.svg)
+![POST流程图](/未命名绘图.drawio.svg)
 
 ​		GET方法原理也是类似的。
