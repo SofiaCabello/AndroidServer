@@ -4,13 +4,23 @@
          version="3.0">
 
     <servlet>
-        <servlet-name>ClientServlet</servlet-name>
-        <servlet-class>org.example.servlet.ClientServlet</servlet-class>
+        <servlet-name>JsonServlet</servlet-name>
+        <servlet-class>org.example.servlet.JsonServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>BinaryServlet</servlet-name>
+        <servlet-class>org.example.servlet.BinaryServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>ClientServlet</servlet-name>
-        <url-pattern>/client</url-pattern>
+        <servlet-name>JsonServlet</servlet-name>
+        <url-pattern>/json</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>BinaryServlet</servlet-name>
+        <url-pattern>/binary</url-pattern>
     </servlet-mapping>
 
 </web-app>
