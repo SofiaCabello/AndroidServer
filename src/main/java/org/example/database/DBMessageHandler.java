@@ -11,15 +11,17 @@ import java.util.Objects;
  * 这个类用以处理消息表chat_info，包括添加消息、删除消息、获取消息列表。
  */
 public class DBMessageHandler extends DBHandler {
-    public DBMessageHandler() throws SQLException {
+    public DBMessageHandler() throws SQLException{
         super();
     }
 
     //添加未读消息到列表中
-    public void addMessage(String sendId, String receiveId, String content) throws SQLException{
+    //表unread_message(TS, sendId, receiveId, type, content)
+    public void addMessage(String sendId, String receiveId, String content, int type) throws SQLException{
         String timeStamp = String.valueOf(System.currentTimeMillis());
-        String query = "INSER INTO chat_info (info_sendid, info_receiveid, info_content,info_TS)" +
-                " VALUES ('" + sendId + "','" + receiveId + "','" + content + "','" + timeStamp + "')";
+        String query =
+                "INSERT INTO unread_message(TS, sendId, receiveId, type, content) " +
+                        "VALUES ('" + timeStamp + "', '" + sendId + "', '" + receiveId + "', '" + type + "', '" + content + "')";
         executeUpdate(query);
     }
 

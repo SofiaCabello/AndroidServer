@@ -13,11 +13,17 @@ import java.util.Map;
  */
 public class DBHandler {
     private Connection connection;
-    private static final String url = "jdbc:mysql://localhost:3306/ChatApp";
+    private static final String url = "jdbc:mysql://localhost:3306/wechat";
     private static final String username = "AndroidServer";
     private static final String password = "server";
 
+
     public DBHandler() throws SQLException {
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+        }catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
         connection = DriverManager.getConnection(url, username, password);
     }
 

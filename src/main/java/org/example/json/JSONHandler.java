@@ -12,6 +12,12 @@ import java.util.Map;
 
 public class JSONHandler {
     private Gson gson;
+    public static final int TYPE_TEXT = 0;
+    public static final int TYPE_IMAGE = 1;
+    public static final int TYPE_AUDIO = 2;
+    public static final int TYPE_VIDEO = 3;
+    public static final int TYPE_FILE = 4;
+
 
     public JSONHandler(){
         gson = new Gson();
@@ -52,8 +58,22 @@ public class JSONHandler {
         String sendId = json.get("sendId").getAsString();
         String receiveId = json.get("receiveId").getAsString();
         String content = json.get("content").getAsString();
-        new DBMessageHandler().addMessage(sendId, receiveId, content);
+        new DBMessageHandler().addMessage(sendId, receiveId, content, TYPE_TEXT);
     }
 
-
+    public void handlePostBase64Request(JsonObject json) throws SQLException{
+        String sendId = json.get("sendId").getAsString();
+        String receiveId = json.get("receiveId").getAsString();
+        String content = json.get("content").getAsString();
+        int type = json.get("fileType").getAsInt();
+        if(type == TYPE_AUDIO){
+            new DBMessageHandler().addMessage(sendId, receiveId, content, TYPE_AUDIO);
+        } else if (type == TYPE_VIDEO) {
+            new DBMessageHandler().addMessage(sendId, receiveId, content, TYPE_VIDEO);
+        } else if (type == TYPE_FILE) {
+            new DBMessageHandler().addMessage(sendId, receiveId, content, TYPE_FILE);
+        } else if (type == TYPE_IMAGE) {
+            new DBMessageHandler().addMessage(sendId, receiveId, content, TYPE_IMAGE);
+        }
+    }
 }

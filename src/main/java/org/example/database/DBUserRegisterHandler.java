@@ -1,5 +1,6 @@
 package org.example.database;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -16,15 +17,27 @@ public class DBUserRegisterHandler extends DBHandler{
     public boolean addUser(String username, String password,String gender,String photoId,String signature) throws SQLException{
         String checkExistQuery = "SELECT * FROM user WHERE user_name = '" + username + "'";
         String checkMaxIdQuery = "SELECT MAX(user_id) FROM user ";
-        int maxId = Integer.parseInt(executeQuery(checkMaxIdQuery).getString(1));
-        maxId++;
         String addUserQuery = "INSERT INTO user (user_name,user_gender,password,user_photoid,user_signature,user_id) " +
-                "VALUES ('"+ username +"',"+ gender +",'"+ password +"','"+ photoId +"','"+ signature +"',"+ maxId +")";
-        if(executeQuery(checkExistQuery).next()){
+                "VALUES ('"+ username +"',"+ gender +",'"+ password +"','"+ photoId +"','"+ signature +"',%d)";
+
+        //检查用户名是否已存在
+        ResultSet existResult = executeQuery(checkExistQuery);
+        if(existResult.next()){
+            existResult.close();
             return false;
-        }else{
-            executeUpdate(addUserQuery);
-            return true;
         }
+        existResult.close();
+
+        //获取当前最大id并加1
+        ResultSet maxIdResult = executeQuery(checkMaxIdQuery);
+        int maxId = maxIdResult.next() ? maxIdResult.getInt(1) + 1 : 1;
+        maxIdResult.close();
+
+        //添加用户
+        String addUserQueryWithId = String.format(addUserQuery, maxId);
+        executeUpdate(addUserQueryWithId);
+
+        //添加用户成功
+        return true;
     }
 }

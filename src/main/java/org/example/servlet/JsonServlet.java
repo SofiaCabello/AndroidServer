@@ -2,15 +2,17 @@ package org.example.servlet;
 
 import com.google.gson.JsonObject;
 import org.example.json.JSONHandler;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 
-public class JsonServlet extends HttpServlet{
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
+public class JsonServlet extends HttpServlet {
     private JSONHandler jsonHandler;
+
     @Override
     public void init() throws ServletException {
         super.init();
@@ -19,7 +21,27 @@ public class JsonServlet extends HttpServlet{
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String json = request.getParameter("json");
+        response.getWriter().write("Request received\n");
+//        // 打印客户端发送的请求数据
+//        BufferedReader reader = request.getReader();
+//        StringBuilder requestData = new StringBuilder();
+//        String line;
+//        while ((line = reader.readLine()) != null) {
+//            requestData.append(line);
+//        }
+//        System.out.println("客户端发送的请求数据：" + requestData.toString());
+
+//        String json = request.getParameter("json");
+//        System.out.println(request.getRequestURI())
+//
+        BufferedReader reader = request.getReader();
+        StringBuilder requestData = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            requestData.append(line);
+        }
+        String json = requestData.toString();
+        System.out.println(json);
         JsonObject jsonObject = jsonHandler.getJsonObject(json);
         if (jsonObject.has("type")) {
             String type = jsonObject.get("type").getAsString();
@@ -39,13 +61,6 @@ public class JsonServlet extends HttpServlet{
                     e.printStackTrace();
                     response.getWriter().write("注册失败");
                 }
-            } else if (type.equals("getMessage")) {
-                try {
-                    response.getWriter().write(jsonHandler.getJsonString(jsonHandler.handleGetMessageRequest(jsonObject)));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    response.getWriter().write("获取消息失败");
-                }
             } else if (type.equals("postMessage")) {
                 try {
                     jsonHandler.handlePostMessageRequest(jsonObject);
@@ -53,12 +68,27 @@ public class JsonServlet extends HttpServlet{
                     e.printStackTrace();
                     response.getWriter().write("发送消息失败");
                 }
+            } else if (type.equals("postBase64")) {
+                try {
+
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                
+            } else if (type.equals("getMessage")) {
+                try {
+                    response.getWriter().write(jsonHandler.getJsonString(jsonHandler.handleGetMessageRequest(jsonObject)));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    response.getWriter().write("获取消息失败");
+                }
+            } else {
+                response.getWriter().write("请求类型错误");
             }
-        }else{
-            response.getWriter().write("请求类型错误");
+
+
         }
 
     }
-
 }
 
