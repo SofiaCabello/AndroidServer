@@ -60,4 +60,35 @@ public class DBHandler {
         }
         return list;
     }
+
+    public String resultSetToJSON(ResultSet resultSet){
+        StringBuilder json = new StringBuilder();
+        try{
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int columnCount = metaData.getColumnCount();
+            while (resultSet.next()){
+                json.append("{");
+                for (int i = 1; i <= columnCount; i++){
+                    String columnName = metaData.getColumnLabel(i);
+                    Object value = resultSet.getObject(columnName);
+                    json.append("\"").append(columnName).append("\":");
+                    if(value instanceof String){
+                        json.append("\"").append(value).append("\"");
+                    }else{
+                        json.append(value);
+                    }
+                    if(i != columnCount){
+                        json.append(",");
+                    }
+                }
+                json.append("}");
+                if(!resultSet.isLast()){
+                    json.append(",");
+                }
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return json.toString();
+    }
 }
